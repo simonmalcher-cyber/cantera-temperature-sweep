@@ -33,6 +33,16 @@ A small web dashboard for running a temperature sweep with Cantera. The form let
    http://127.0.0.1:5000
    ```
 
+## Quick smoke test
+
+To verify that Cantera is working on your machine before using the dashboard, run:
+
+```bash
+python test_cantera.py
+```
+
+This performs a short temperature sweep for methane at 10 bar and prints the main equilibrium species at each step.
+
 ## Notes
 - The app uses the Cantera `gri30.yaml` mechanism by default.
 - Pressure is entered in bar and converted internally to Pa.
