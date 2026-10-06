@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cantera Temperature Sweep Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Cantera Temperature Sweep Dashboard</h1>
+
+      <div class="panel">
+        <form method="POST">
+          <div class="form-grid">
+            <div class="field">
+              <label for="fuel">Fuel</label>
+              <select id="fuel" name="fuel">
+                <option value="CH4" {% if form_data.fuel == 'CH4' %}selected{% endif %}>CH4</option>
+                <option value="H2" {% if form_data.fuel == 'H2' %}selected{% endif %}>H2</option>
+                <option value="C2H6" {% if form_data.fuel == 'C2H6' %}selected{% endif %}>C2H6</option>
+                <option value="C3H8" {% if form_data.fuel == 'C3H8' %}selected{% endif %}>C3H8</option>
+                <option value="C8H18" {% if form_data.fuel == 'C8H18' %}selected{% endif %}>C8H18</option>
+                <option value="CO" {% if form_data.fuel == 'CO' %}selected{% endif %}>CO</option>
+                <option value="NH3" {% if form_data.fuel == 'NH3' %}selected{% endif %}>NH3</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="pressure_bar">Pressure (bar)</label>
+              <input id="pressure_bar" type="number" step="0.1" min="0.1" name="pressure_bar" value="{{ form_data.pressure_bar }}" />
+            </div>
+
+            <div class="field">
+              <label for="equivalence_ratio">Equivalence ratio (-)</label>
+              <input id="equivalence_ratio" type="number" step="0.01" min="0.1" max="5" name="equivalence_ratio" value="{{ form_data.equivalence_ratio }}" />
+            </div>
+
+            <div class="field">
+              <label for="temperature_min">Min temperature (K)</label>
+              <input id="temperature_min" type="number" step="10" min="300" max="4000" name="temperature_min" value="{{ form_data.temperature_min }}" />
+            </div>
+
+            <div class="field">
+              <label for="temperature_max">Max temperature (K)</label>
+              <input id="temperature_max" type="number" step="10" min="300" max="4000" name="temperature_max" value="{{ form_data.temperature_max }}" />
+            </div>
+
+            <div class="field">
+              <label for="temperature_step">Temperature step (K)</label>
+              <input id="temperature_step" type="number" step="1" min="1" max="250" name="temperature_step" value="{{ form_data.temperature_step }}" />
+            </div>
+
+            <div class="field">
+              <label for="mechanism">Mechanism</label>
+              <select id="mechanism" name="mechanism">
+                <option value="gri30.yaml" {% if form_data.mechanism == 'gri30.yaml' %}selected{% endif %}>gri30.yaml</option>
+                <option value="h2o2.yaml" {% if form_data.mechanism == 'h2o2.yaml' %}selected{% endif %}>h2o2.yaml</option>
+              </select>
+            </div>
+
+            <div class="field" style="justify-content: end;">
+              <button type="submit">Run sweep</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {% if summary.error %}
+      <div class="error">{{ summary.error }}</div>
+      {% endif %}
+
+      {% if results %}
+      <div class="panel">
+        <div class="summary-grid">
+          <div class="summary-box">
+            <strong>Fuel</strong>
+            {{ summary.fuel }}
+          </div>
+          <div class="summary-box">
+            <strong>Pressure</strong>
+            {{ summary.pressure_bar }} bar
+          </div>
+          <div class="summary-box">
+            <strong>Equivalence ratio</strong>
+            {{ summary.equivalence_ratio }}
+          </div>
+          <div class="summary-box">
+            <strong>Temperature range</strong>
+            {{ summary.temperature_start }} K → {{ summary.temperature_end }} K
+          </div>
+          <div class="summary-box">
+            <strong>Data points</strong>
+            {{ summary.n_points }}
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Temperature (K)</th>
+              <th>Pressure (bar)</th>
+              <th>H2O</th>
+              <th>CO2</th>
+              <th>CO</th>
+              <th>H2</th>
+              <th>O2</th>
+              <th>OH</th>
+              <th>NO</th>
+              <th>Density (kg/m³)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in results %}
+            <tr>
+              <td>{{ row.temperature_K }}</td>
+              <td>{{ row.pressure_bar }}</td>
+              <td>{{ row.species.H2O }}</td>
+              <td>{{ row.species.CO2 }}</td>
+              <td>{{ row.species.CO }}</td>
+              <td>{{ row.species.H2 }}</td>
+              <td>{{ row.species.O2 }}</td>
+              <td>{{ row.species.OH }}</td>
+              <td>{{ row.species.NO }}</td>
+              <td>{{ row.density_kg_m3 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

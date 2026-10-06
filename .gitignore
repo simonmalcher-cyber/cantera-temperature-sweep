@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Flask / runtime
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Output from plotting or generated data
+*.png
+*.svg
+*.pdf
